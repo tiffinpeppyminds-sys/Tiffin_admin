@@ -109,9 +109,12 @@ export function RevenueChart() {
               <YAxis yAxisId="revenue" hide />
               <Tooltip
                 cursor={{ stroke: "#3b82f6", strokeWidth: 1.5, strokeDasharray: "4 4" }}
-                formatter={(value: number, name: string) =>
-                  name === "orders" ? [`${value} orders`, "Orders"] : [`$${value}`, "Revenue"]
-                }
+                formatter={(value, name) => {
+                  const numericValue = typeof value === "number" ? value : Number(value ?? 0);
+                  return name === "orders"
+                    ? [`${numericValue} orders`, "Orders"]
+                    : [`$${numericValue}`, "Revenue"];
+                }}
                 labelStyle={{ color: "#0f172a", fontWeight: 700 }}
                 contentStyle={{
                   borderRadius: "12px",
