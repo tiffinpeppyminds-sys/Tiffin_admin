@@ -1,0 +1,9 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // TODO: Restrict to admin paths and roles before production.
+    match /{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
