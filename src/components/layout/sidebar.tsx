@@ -1,90 +1,196 @@
 "use client";
 
-import type { ComponentType } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Bell,
+  BookOpen,
   ChartNoAxesCombined,
-  CircleHelp,
-  LayoutDashboard,
+  ChevronDown,
+  CreditCard,
+  FileText,
+  Home,
+  Megaphone,
   ScrollText,
-  ShieldCheck,
+  Settings,
+  Sparkles,
   Store,
+  Tag,
   UserCog,
   Users,
-  Workflow,
 } from "lucide-react";
-import { navItems } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
-const iconMap: Record<string, ComponentType<{ className?: string }>> = {
-  "/dashboard": LayoutDashboard,
-  "/admins": UserCog,
-  "/providers": Store,
-  "/customers": Users,
-  "/orders": ScrollText,
-  "/complaints": CircleHelp,
-  "/reports": ChartNoAxesCombined,
-  "/notifications": Bell,
-  "/app-flows": Workflow,
+type Leaf = { label: string; href: string; match?: (path: string) => boolean };
+type NavItem = {
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+  href?: string;
+  children?: Leaf[];
 };
+
+const nav: NavItem[] = [
+  { label: "Home", icon: Home, href: "/dashboard" },
+  {
+    label: "Shops",
+    icon: Store,
+    children: [
+      { label: "All shops", href: "/providers", match: (p) => p === "/providers" || (p.startsWith("/providers/") && !["shop-groups", "webshop", "devices", "add"].some((s) => p.includes(s))) },
+      { label: "Shop groups", href: "/providers/shop-groups" },
+      { label: "Webshop", href: "/providers/webshop" },
+      { label: "Devices", href: "/providers/devices" },
+    ],
+  },
+  { label: "Orders", icon: ScrollText, href: "/orders" },
+  {
+    label: "Performance",
+    icon: ChartNoAxesCombined,
+    children: [
+      { label: "Sales", href: "/performance/sales" },
+      { label: "Operations", href: "/performance/operations" },
+      { label: "Success", href: "/performance/success" },
+      { label: "Market benchmarking", href: "/performance/market-benchmarking" },
+    ],
+  },
+  {
+    label: "Customers",
+    icon: Users,
+    children: [
+      { label: "Customer insights", href: "/customers" },
+      { label: "Reviews", href: "/feedback" },
+    ],
+  },
+  { label: "Reports", icon: FileText, href: "/reports" },
+  { label: "Ads", icon: Megaphone, href: "/ads" },
+  { label: "Offers", icon: Tag, href: "/offers" },
+  { label: "Marketing", icon: Sparkles, href: "/marketing" },
+  { label: "Menu", icon: BookOpen, href: "/menu" },
+  {
+    label: "Payments",
+    icon: CreditCard,
+    children: [
+      { label: "Payouts", href: "/payments", match: (p) => p === "/payments" },
+      { label: "Payouts by order", href: "/payments/payouts-by-order" },
+      { label: "Invoices", href: "/payments/invoices" },
+      { label: "Invoice settings", href: "/payments/invoice-settings" },
+      { label: "Banking", href: "/payments/banking" },
+    ],
+  },
+  { label: "Users", icon: UserCog, href: "/admins" },
+  {
+    label: "Settings",
+    icon: Settings,
+    children: [
+      { label: "General", href: "/settings", match: (p) => p === "/settings" },
+      { label: "Holiday hours", href: "/settings/holiday-hours" },
+      { label: "Preparation Times", href: "/settings/preparation-times" },
+      { label: "Documents", href: "/settings/documents" },
+      { label: "Appointments", href: "/settings/appointments" },
+    ],
+  },
+];
+
+function isChildActive(child: Leaf, pathname: string) {
+  if (child.match) return child.match(pathname);
+  return pathname === child.href;
+}
+
+function isGroupActive(item: NavItem, pathname: string) {
+  return item.children?.some((child) => isChildActive(child, pathname)) ?? false;
+}
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
+
+  useEffect(() => {
+    const active = nav.find((item) => item.children && isGroupActive(item, pathname));
+    if (active) setOpenGroup(active.label);
+  }, [pathname]);
+
+  const toggleGroup = (label: string) => {
+    setOpenGroup((current) => (current === label ? null : label));
+  };
 
   return (
-    <aside className="glass-card sticky top-4 hidden h-[calc(110vh-1rem)] w-80 flex-col rounded-2xl border border-blue-100/60 bg-gradient-to-b from-white to-slate-50 p-4 lg:flex dark:border-slate-700 dark:bg-slate-950">
-      <div className="premium-gradient top-shine mb-6 flex min-h-[140px] flex-col overflow-hidden rounded-xl border border-blue-200/30 px-5 py-7 text-left text-white shadow-lg dark:border-blue-900/70">
-        <div className="mb-4 flex w-full items-center justify-center gap-2">
-          <div className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/35 bg-white/10 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-blue-50">
-            <ShieldCheck className="size-3.5 text-blue-200" />
-            Tiffin Finder
-          </div>
-          <div className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-white/35 bg-white/10 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-blue-100">
-            Executive
-          </div>
-        </div>
-
-        <div className="mt-2 text-left">
-          <p className="heading-classic text-[24px] leading-none font-semibold">Admin Control Center</p>
-        </div>
+    <aside className="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-64 shrink-0 flex-col overflow-y-auto border-r border-neutral-200 bg-white lg:flex">
+      <div className="px-4 pt-4">
+        <p className="px-2 text-[11px] font-medium text-neutral-500">Business</p>
+        <button
+          type="button"
+          className="mt-0.5 flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-neutral-100"
+        >
+          <span className="text-base font-bold tracking-[-0.02em] text-black">All shops</span>
+          <ChevronDown className="size-4 text-neutral-500" />
+        </button>
       </div>
-      <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-black/70 dark:text-slate-500">
-        Navigation
-      </p>
-      <nav className="space-y-1">
-        {navItems.map((item) => {
+
+      <nav className="flex-1 space-y-0.5 px-3 py-3">
+        {nav.map((item) => {
+          const Icon = item.icon;
+
+          if (item.children) {
+            const isOpen = openGroup === item.label;
+            const groupActive = isGroupActive(item, pathname);
+            return (
+              <div key={item.label}>
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(item.label)}
+                  className={cn(
+                    "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
+                    groupActive
+                      ? "font-semibold text-black"
+                      : "font-medium text-neutral-700 hover:bg-neutral-50 hover:text-black",
+                  )}
+                >
+                  <Icon className={cn("size-[18px] shrink-0", groupActive ? "text-black" : "text-neutral-500")} />
+                  <span className="flex-1 text-left">{item.label}</span>
+                  <ChevronDown className={cn("size-4 text-neutral-400 transition-transform", isOpen && "rotate-180")} />
+                </button>
+                {isOpen ? (
+                  <div className="mb-1 space-y-0.5 pl-9">
+                    {item.children.map((child) => {
+                      const active = isChildActive(child, pathname);
+                      return (
+                        <Link
+                          key={child.label}
+                          href={child.href}
+                          className={cn(
+                            "block rounded-lg px-3 py-2 text-sm transition-colors",
+                            active
+                              ? "bg-neutral-100 font-semibold text-black"
+                              : "font-medium text-neutral-600 hover:bg-neutral-50 hover:text-black",
+                          )}
+                        >
+                          {child.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </div>
+            );
+          }
+
           const isActive = pathname === item.href;
-          const Icon = iconMap[item.href] ?? LayoutDashboard;
           return (
             <Link
-              key={item.href}
-              href={item.href}
+              key={item.label}
+              href={item.href ?? "#"}
               className={cn(
-                "block rounded-lg px-3 py-2.5 transition-all",
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
                 isActive
-                  ? "border-l-4 border-blue-700 bg-blue-50 text-black dark:border-blue-400 dark:bg-blue-950/40 dark:text-slate-100"
-                  : "border-l-4 border-transparent text-black hover:bg-blue-50/60 dark:text-slate-300 dark:hover:bg-slate-900",
+                  ? "bg-neutral-100 font-semibold text-black"
+                  : "font-medium text-neutral-700 hover:bg-neutral-50 hover:text-black",
               )}
             >
-              <div className="flex items-start gap-2.5">
-                <Icon className={cn("mt-0.5 size-4 shrink-0", isActive ? "text-blue-800 dark:text-blue-300" : "text-black")} />
-                <div>
-                  <p className="heading-classic text-[15px] font-semibold">{item.label}</p>
-                  <p className="text-xs text-black/80 dark:text-slate-500">{item.description}</p>
-                </div>
-              </div>
+              <Icon className={cn("size-[18px] shrink-0", isActive ? "text-black" : "text-neutral-500")} />
+              {item.label}
             </Link>
           );
         })}
       </nav>
-      <div className="subtle-divider mt-auto rounded-xl border border-blue-200 bg-blue-50/70 p-4 dark:border-slate-700 dark:bg-slate-950/40">
-        <p className="heading-classic text-sm font-semibold text-black dark:text-slate-100">Role: Super Admin</p>
-        <p className="mt-1 text-xs text-black/85 dark:text-slate-400">
-          Can create admins, manage permissions, and access every module.
-        </p>
-      </div>
     </aside>
   );
 }

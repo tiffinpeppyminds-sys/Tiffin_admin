@@ -14,8 +14,8 @@ const notifications = [
 export default function NotificationsPage() {
   return (
     <ModuleTable
-      title="Background Notifications Matrix"
-      description="Control engagement messages with channel-based filtering and status sorting."
+      title="Notifications"
+      description="Manage notification triggers and delivery channels for your business."
       data={notifications}
       searchPlaceholder="Search trigger, channel, medium..."
       filterOptions={[

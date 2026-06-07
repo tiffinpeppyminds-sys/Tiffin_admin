@@ -1,36 +1,28 @@
 "use client";
 
-import { ArrowUpRight, Rocket, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 export function ExecutiveHero() {
   return (
-    <section className="premium-gradient top-shine animate-fade-in-up overflow-hidden rounded-2xl p-6 text-white shadow-xl">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+    <section className="animate-fade-in-up overflow-hidden rounded-xl bg-black p-6 text-white lg:p-8">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <Badge className="mb-3 border-white/30 bg-white/15 text-white" variant="default">
-            <Sparkles className="mr-1.5 size-3.5" />
-            Executive Control Layer
-          </Badge>
-          <h2 className="heading-classic text-3xl font-semibold">Modern operations with classic reliability.</h2>
-          <p className="mt-2 max-w-2xl text-sm text-blue-100">
-            Platform-level command view for approvals, service quality, growth reporting, and escalation response.
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium">
+            <span className="inline-block size-2 rounded-full bg-[#06c167]" />
+            Store online
+          </div>
+          <h2 className="text-2xl font-bold tracking-[-0.02em] lg:text-[28px]">Good day, Desi Lunch Studio</h2>
+          <p className="mt-1.5 max-w-xl text-sm text-neutral-300">
+            Here is how your store is performing today. Manage live orders, update your menu, and grow your sales.
           </p>
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-2">
-          <Button className="border border-white/20 bg-white/10 text-white hover:bg-white/20">
-            <Rocket className="mr-1.5 size-4" />
-            Launch Campaign
-          </Button>
-          <Button className="border border-white/20 bg-white/10 text-white hover:bg-white/20">
-            <ShieldCheck className="mr-1.5 size-4" />
-            Review Compliance
-          </Button>
-          <Button className="border border-white/20 bg-white/10 text-white hover:bg-white/20 sm:col-span-2">
-            Open Strategic Reports
-            <ArrowUpRight className="ml-1.5 size-4" />
+        <div className="flex flex-wrap gap-2.5">
+          <Button variant="success">View live orders</Button>
+          <Button className="bg-white text-black hover:bg-neutral-200">
+            Create offer
+            <ArrowRight className="ml-1.5 size-4" />
           </Button>
         </div>
       </div>

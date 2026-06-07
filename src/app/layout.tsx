@@ -1,41 +1,24 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+// Uber Move is proprietary; Inter is the closest open neo-grotesque substitute.
+const uber = Inter({
   subsets: ["latin"],
-  variable: "--font-sans",
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-display",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-uber",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Tiffin Finder Admin",
-  description: "Super admin and operations dashboard for Tiffin Finder",
+  title: "Tiffin Finder Manager",
+  description: "Manage your store, orders, menu, and performance on Tiffin Finder",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var saved = localStorage.getItem("theme");
-                  var isDark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
-                  document.documentElement.classList.toggle("dark", isDark);
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
-      </head>
-      <body className={`${inter.variable} ${playfair.variable} font-sans`}>{children}</body>
+    <html lang="en">
+      <body className={`${uber.variable} font-sans`}>{children}</body>
     </html>
   );
 }

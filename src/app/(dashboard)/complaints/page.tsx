@@ -13,8 +13,8 @@ const complaints = [
 export default function ComplaintsPage() {
   return (
     <ModuleTable
-      title="Complaints & Resolution Queue"
-      description="Sort and prioritize dispute handling by severity, provider, and assigned team."
+      title="Order issues"
+      description="Review disputes, chargebacks, and resolutions across your shops."
       data={complaints}
       searchPlaceholder="Search complaint ID, issue, provider..."
       filterOptions={[

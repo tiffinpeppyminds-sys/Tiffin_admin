@@ -1,144 +1,191 @@
 "use client";
 
-import { useState } from "react";
-import { AlertCircle, Repeat2, ShieldAlert, Wallet2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { ModuleTable } from "@/components/ui/module-table";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import { BarChart3, ChevronDown, ShoppingBag, Star } from "lucide-react";
+import { DownloadButton, FilterDropdown, FilterPills } from "@/components/performance/shared";
+import { customerGroups, shopsByGroup, trendBars } from "@/lib/customers-data";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
-const initialCustomers = [
-  { name: "Amrita Nair", phone: "+61 420 101 900", orders: 23, status: "Active", spend: "$612", risk: "Low", repeatRate: "44%" },
-  { name: "Mason Clarke", phone: "+61 410 555 011", orders: 3, status: "Under Review", spend: "$93", risk: "High", repeatRate: "11%" },
-  { name: "Priya Joshi", phone: "+61 478 330 777", orders: 51, status: "VIP", spend: "$1,904", risk: "Low", repeatRate: "67%" },
-  { name: "Ryan Smith", phone: "+61 430 802 210", orders: 16, status: "Active", spend: "$388", risk: "Medium", repeatRate: "31%" },
-  { name: "Jenna Lee", phone: "+61 400 119 442", orders: 7, status: "Under Review", spend: "$140", risk: "High", repeatRate: "18%" },
-];
+const totalCustomers = customerGroups.reduce((sum, g) => sum + g.count, 0);
 
-export default function CustomersPage() {
-  const [customers, setCustomers] = useState(initialCustomers);
+function UberOneIcon() {
+  return (
+    <span className="flex size-4 items-center justify-center rounded-full bg-[#c7922e] text-[9px] font-bold text-white">
+      U
+    </span>
+  );
+}
 
-  const updateCustomerStatus = (phone: string, status: string) => {
-    setCustomers((current) =>
-      current.map((customer) => (customer.phone === phone ? { ...customer, status } : customer)),
-    );
-  };
+export default function CustomerInsightsPage() {
+  const [trendFilter, setTrendFilter] = useState<"All customers" | "New" | "Occasional" | "Frequent">("All customers");
+  const trendData = trendBars.map((value, i) => ({ day: `D${i + 1}`, value }));
+
+  const donutSegments = useMemo(() => {
+    let offset = 0;
+    return customerGroups.map((group) => {
+      const pct = (group.count / totalCustomers) * 100;
+      const segment = { group, pct, offset };
+      offset += pct;
+      return segment;
+    });
+  }, []);
 
   return (
     <div className="space-y-6">
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <Card className="top-shine">
-          <CardHeader><CardTitle className="text-sm">Active Customers</CardTitle></CardHeader>
-          <CardContent>
-            <p className="heading-classic text-3xl font-semibold text-black dark:text-slate-100">12.8K</p>
-            <p className="mt-1 inline-flex items-center gap-1 text-xs text-black dark:text-slate-300"><Repeat2 className="size-3.5 text-blue-600" />+4.2% weekly growth</p>
-          </CardContent>
-        </Card>
-        <Card className="top-shine">
-          <CardHeader><CardTitle className="text-sm">VIP Customers</CardTitle></CardHeader>
-          <CardContent>
-            <p className="heading-classic text-3xl font-semibold text-black dark:text-slate-100">1,046</p>
-            <p className="mt-1 inline-flex items-center gap-1 text-xs text-black dark:text-slate-300"><Wallet2 className="size-3.5 text-blue-600" />42% revenue contribution</p>
-          </CardContent>
-        </Card>
-        <Card className="top-shine">
-          <CardHeader><CardTitle className="text-sm">Accounts Under Review</CardTitle></CardHeader>
-          <CardContent>
-            <p className="heading-classic text-3xl font-semibold text-black dark:text-slate-100">37</p>
-            <p className="mt-1 inline-flex items-center gap-1 text-xs text-black dark:text-slate-300"><ShieldAlert className="size-3.5 text-amber-600" />Fraud/abuse monitoring</p>
-          </CardContent>
-        </Card>
-        <Card className="top-shine">
-          <CardHeader><CardTitle className="text-sm">Support Escalations</CardTitle></CardHeader>
-          <CardContent>
-            <p className="heading-classic text-3xl font-semibold text-black dark:text-slate-100">14</p>
-            <p className="mt-1 inline-flex items-center gap-1 text-xs text-black dark:text-slate-300"><AlertCircle className="size-3.5 text-blue-600" />Avg resolution 6.4 hrs</p>
-          </CardContent>
-        </Card>
+      <div>
+        <h1 className="page-title">Customer insights</h1>
+        <p className="mt-1 text-sm text-neutral-600">See who is ordering from you and their impact on your sales.</p>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <FilterDropdown label="All shops" options={["All shops", "Maikhana Adelaide", "Scoop Shoppe"]} />
+          <FilterDropdown label="Last 7 days" options={["Last 7 days", "Last 30 days", "Today"]} />
+        </div>
+      </div>
+
+      <section className="rounded-xl border border-neutral-200 bg-white p-6">
+        <h2 className="text-base font-bold text-black">Customer groups overview</h2>
+        <p className="mt-1 text-xs text-neutral-500">June 1 – 7, 2026 compared to May 25 – 31, 2026</p>
+
+        <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-center">
+          <div className="relative mx-auto flex size-40 shrink-0 items-center justify-center lg:mx-0">
+            <svg viewBox="0 0 36 36" className="size-full -rotate-90">
+              {donutSegments.map(({ group, pct, offset }) => (
+                <circle
+                  key={group.id}
+                  cx="18"
+                  cy="18"
+                  r="15.9"
+                  fill="none"
+                  stroke={group.color}
+                  strokeWidth="3.2"
+                  strokeDasharray={`${pct} ${100 - pct}`}
+                  strokeDashoffset={-offset}
+                />
+              ))}
+            </svg>
+            <div className="absolute text-center">
+              <p className="text-xs text-neutral-500">Total</p>
+              <p className="text-2xl font-bold text-black">{totalCustomers}</p>
+            </div>
+          </div>
+
+          <div className="grid flex-1 gap-6 sm:grid-cols-3">
+            {customerGroups.map((group) => (
+              <div key={group.id}>
+                <span className="inline-flex items-center gap-2 text-sm font-medium text-black">
+                  <span className="size-2.5 rounded-full" style={{ backgroundColor: group.color }} />
+                  <span className="border-b border-dotted border-neutral-400">{group.label}</span>
+                </span>
+                <p className="mt-2 text-lg font-bold text-black">
+                  {group.count} ({group.percent}%)
+                </p>
+                <p className="text-sm font-medium text-[#048a48]">{group.change.toFixed(1)}% ↑</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      <ModuleTable
-        title="Customer Governance"
-        description="Track account health, lifetime value, repeat behavior, and moderation risk."
-        data={customers}
-        searchPlaceholder="Search customer by name or phone..."
-        filterOptions={[
-          { label: "Active", value: "active", predicate: (customer) => customer.status === "Active" },
-          { label: "VIP", value: "vip", predicate: (customer) => customer.status === "VIP" },
-          { label: "Under Review", value: "review", predicate: (customer) => customer.status === "Under Review" },
-          { label: "High Risk", value: "high_risk", predicate: (customer) => customer.risk === "High" },
-          { label: "Suspended", value: "suspended", predicate: (customer) => customer.status === "Suspended" },
-          { label: "Rejected", value: "rejected", predicate: (customer) => customer.status === "Rejected" },
-        ]}
-        columns={[
-          { key: "name", label: "Customer", sortable: true, className: "min-w-44" },
-          { key: "phone", label: "Phone", sortable: true },
-          { key: "orders", label: "Orders", sortable: true },
-          { key: "spend", label: "Lifetime Spend", sortable: true },
-          { key: "repeatRate", label: "Repeat Rate", sortable: true },
-          {
-            key: "risk",
-            label: "Risk",
-            sortable: true,
-            render: (customer) => (
-              <Badge
-                variant={
-                  customer.risk === "High"
-                    ? "danger"
-                    : customer.risk === "Medium"
-                      ? "warning"
-                      : "success"
-                }
-              >
-                {customer.risk}
-              </Badge>
-            ),
-          },
-          {
-            key: "status",
-            label: "Status",
-            sortable: true,
-            render: (customer) => (
-              <Badge
-                variant={
-                  customer.status === "VIP"
-                    ? "default"
-                    : customer.status === "Active"
-                      ? "success"
-                      : customer.status === "Suspended"
-                        ? "muted"
-                        : customer.status === "Rejected"
-                          ? "danger"
-                          : "warning"
-                }
-              >
-                {customer.status}
-              </Badge>
-            ),
-          },
-          {
-            key: "repeatRate",
-            label: "Action",
-            render: (customer) => (
-              <div className="flex min-w-44 flex-wrap gap-2">
-                {customer.status === "Under Review" ? (
-                  <Button size="sm" variant="ghost" onClick={() => updateCustomerStatus(customer.phone, "Rejected")}>
-                    Reject
-                  </Button>
-                ) : customer.status === "Suspended" || customer.status === "Rejected" ? (
-                  <Button size="sm" variant="secondary" onClick={() => updateCustomerStatus(customer.phone, "Active")}>
-                    Reactivate
-                  </Button>
-                ) : (
-                  <Button size="sm" variant="ghost" onClick={() => updateCustomerStatus(customer.phone, "Suspended")}>
-                    Suspend
-                  </Button>
-                )}
-              </div>
-            ),
-          },
-        ]}
-      />
+      <div className="grid gap-4 lg:grid-cols-3">
+        {customerGroups.map((group) => (
+          <section key={group.id} className="rounded-xl border border-neutral-200 bg-white p-5">
+            <h3 className="text-base font-bold text-black">{group.label}</h3>
+            <p className="mt-1 text-sm leading-relaxed text-neutral-500">{group.description}</p>
+            <div className="mt-4 divide-y divide-neutral-100 text-sm text-neutral-700">
+              <p className="flex items-center gap-3 py-3">
+                <BarChart3 className="size-4 shrink-0 text-neutral-400" />
+                <span>
+                  {group.sales} <span className="text-neutral-500">({group.salesShare})</span>
+                </span>
+              </p>
+              <p className="flex items-center gap-3 py-3">
+                <ShoppingBag className="size-4 shrink-0 text-neutral-400" />
+                {group.avgOrder}
+              </p>
+              <p className="flex items-center gap-3 py-3">
+                <Star className="size-4 shrink-0 text-neutral-400" />
+                {group.avgRating}
+              </p>
+              <p className="flex items-center gap-3 py-3">
+                <UberOneIcon />
+                {group.uberOne}
+              </p>
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <section className="rounded-xl border border-neutral-200 bg-white">
+        <div className="flex flex-wrap items-start justify-between gap-3 px-6 py-5">
+          <div>
+            <h2 className="text-base font-bold text-black">Customer groups by shop</h2>
+            <p className="mt-0.5 text-sm text-neutral-500">View how customer groups vary across all your shops</p>
+          </div>
+          <DownloadButton />
+        </div>
+        <div className="overflow-x-auto px-6 pb-6">
+          <table className="min-w-full text-sm">
+            <thead>
+              <tr className="border-b border-neutral-200">
+                <th className="py-3 pr-4 text-left text-sm font-medium text-black">Shop name</th>
+                {["New", "Occasional", "Frequent", "Total"].map((col) => (
+                  <th key={col} className="px-4 py-3 text-right text-sm font-medium text-black">
+                    <span className="inline-flex items-center justify-end gap-1">
+                      {col}
+                      <ChevronDown className="size-3.5 text-neutral-400" />
+                    </span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {shopsByGroup.map((shop) => (
+                <tr key={shop.name} className="border-b border-neutral-100">
+                  <td className="py-4 pr-4">
+                    <Link href="/providers" className="font-medium text-[#276ef1] hover:underline">
+                      {shop.name}
+                    </Link>
+                    <p className="text-xs text-neutral-500">{shop.address}</p>
+                  </td>
+                  <td className="px-4 py-4 text-right text-black">{shop.new}</td>
+                  <td className="px-4 py-4 text-right text-black">{shop.occasional}</td>
+                  <td className="px-4 py-4 text-right text-black">{shop.frequent}</td>
+                  <td className="px-4 py-4 text-right font-medium text-black">{shop.total}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-neutral-200 bg-white">
+        <div className="flex flex-wrap items-start justify-between gap-3 px-6 py-5">
+          <div>
+            <h2 className="text-base font-bold text-black">Customer group trends</h2>
+            <p className="mt-0.5 text-sm text-neutral-500">View the trends of different customer groups visiting your shop.</p>
+          </div>
+          <DownloadButton />
+        </div>
+        <div className="px-6 pb-6">
+          <FilterPills
+            options={["All customers", "New", "Occasional", "Frequent"]}
+            value={trendFilter}
+            onChange={setTrendFilter}
+          />
+          <p className="mt-6 kpi-value-lg">14</p>
+          <p className="text-sm text-neutral-500">{trendFilter}</p>
+          <div className="mt-4 h-52">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={trendData} margin={{ top: 8, right: 8, left: -16, bottom: 4 }}>
+                <CartesianGrid stroke="#f0f0f0" vertical={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 11, fill: "#757575" }} axisLine={false} tickLine={false} hide />
+                <YAxis tick={{ fontSize: 11, fill: "#757575" }} axisLine={false} tickLine={false} domain={[0, 6]} />
+                <Bar dataKey="value" fill="#276ef1" radius={[2, 2, 0, 0]} barSize={28} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

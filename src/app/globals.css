@@ -1,77 +1,321 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
-:root {
-  --background: #f4f6fb;
-  --foreground: #000000;
-  --card: #ffffff;
-  --line: #e2e8f0;
-  --muted: #64748b;
-  --primary: #1e3a8a;
-  --primary-soft: #dbeafe;
+/*
+  Uber Eats Manager design language.
+  The whole product is recolored centrally by remapping Tailwind's color ramps
+  to the Uber Eats palette: pure white canvas, ink-black brand/CTAs, and a single
+  green accent (#06c167) reserved for success / live states.
+*/
+@theme {
+  --font-sans: var(--font-uber), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-uber), ui-sans-serif, system-ui, sans-serif;
+
+  /* radii */
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 12px;
+
+  /* Brand ink ramp (formerly blue) -> monochrome black */
+  --color-blue-50: #f6f6f6;
+  --color-blue-100: #eeeeee;
+  --color-blue-200: #e6e6e6;
+  --color-blue-300: #cccccc;
+  --color-blue-400: #9e9e9e;
+  --color-blue-500: #545454;
+  --color-blue-600: #1f1f1f;
+  --color-blue-700: #000000;
+  --color-blue-800: #000000;
+  --color-blue-900: #000000;
+  --color-blue-950: #000000;
+
+  /* Indigo also collapses to ink */
+  --color-indigo-300: #cccccc;
+  --color-indigo-500: #1f1f1f;
+  --color-indigo-600: #000000;
+
+  /* Neutral ramp (formerly slate) */
+  --color-slate-50: #f6f6f6;
+  --color-slate-100: #eeeeee;
+  --color-slate-200: #eeeeee;
+  --color-slate-300: #cccccc;
+  --color-slate-400: #757575;
+  --color-slate-500: #545454;
+  --color-slate-600: #545454;
+  --color-slate-700: #333333;
+  --color-slate-800: #1f1f1f;
+  --color-slate-900: #000000;
+  --color-slate-950: #000000;
+
+  /* Success -> Uber Eats green */
+  --color-emerald-50: #e6f9ee;
+  --color-emerald-100: #c8f2da;
+  --color-emerald-200: #9fe8bf;
+  --color-emerald-300: #6fdca0;
+  --color-emerald-400: #2bce7e;
+  --color-emerald-500: #06c167;
+  --color-emerald-600: #05a657;
+  --color-emerald-700: #048a48;
+  --color-emerald-800: #036b39;
+  --color-emerald-900: #024d29;
+  --color-green-500: #06c167;
+  --color-green-600: #05a657;
+
+  /* Warning */
+  --color-amber-50: #fff8e6;
+  --color-amber-100: #ffefc0;
+  --color-amber-200: #ffe39c;
+  --color-amber-300: #ffd270;
+  --color-amber-500: #ffc043;
+  --color-amber-600: #8a5a00;
+  --color-amber-700: #6f4a00;
+  --color-amber-900: #4a3100;
+
+  /* Danger */
+  --color-rose-50: #fde8e6;
+  --color-rose-100: #fbd5d1;
+  --color-rose-200: #f6bdb6;
+  --color-rose-300: #ef9387;
+  --color-rose-500: #e11900;
+  --color-rose-600: #cc1700;
+  --color-rose-700: #b31400;
+  --color-rose-900: #6b0c00;
 }
 
-:root.dark {
-  --background: #020617;
-  --foreground: #e2e8f0;
-  --card: #0f172a;
-  --line: #1e293b;
-  --muted: #94a3b8;
-  --primary: #3b82f6;
-  --primary-soft: #1e293b;
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --line: #eeeeee;
+  --line-strong: #cccccc;
+  --muted: #545454;
+  --soft: #757575;
+  --brand: #000000;
+  --brand-green: #06c167;
 }
 
 body {
-  background:
-    radial-gradient(circle at 0% 0%, #e0e7ff 0%, rgba(224, 231, 255, 0) 36%),
-    radial-gradient(circle at 100% 0%, #dbeafe 0%, rgba(219, 234, 254, 0) 32%),
-    linear-gradient(180deg, #f8fafc 0%, #f3f4f6 100%);
+  background: #ffffff;
   color: var(--foreground);
   min-height: 100vh;
-  letter-spacing: -0.01em;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-:root:not(.dark) [class*="text-slate-"] {
-  color: #000 !important;
+/* ── UEM typography scale ─────────────────────────────────────────── */
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #000000;
 }
 
-.dark body {
-  background:
-    radial-gradient(circle at 0% 0%, rgba(30, 58, 138, 0.35) 0%, rgba(30, 58, 138, 0) 32%),
-    radial-gradient(circle at 100% 0%, rgba(30, 64, 175, 0.3) 0%, rgba(30, 64, 175, 0) 26%),
-    linear-gradient(180deg, #020617 0%, #020617 100%);
+.page-title-lg {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #000000;
 }
 
+.page-title-xl {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: #000000;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #000000;
+}
+
+.subsection-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #000000;
+}
+
+.body-muted {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #545454;
+}
+
+.kpi-value {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #000000;
+}
+
+.kpi-value-lg {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #000000;
+}
+
+.tab-bar {
+  border-bottom: 1px solid #eeeeee;
+}
+
+.tab-link {
+  margin-bottom: -1px;
+  border-bottom: 3px solid transparent;
+  padding-bottom: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #757575;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.tab-link:hover {
+  color: #000000;
+}
+
+.tab-link-active {
+  border-bottom-color: #000000;
+  color: #000000;
+}
+
+.uem-input {
+  height: 44px;
+  width: 100%;
+  border-radius: 8px;
+  border: none;
+  background: #f6f6f6;
+  padding: 0 14px;
+  font-size: 14px;
+  color: #000000;
+  outline: none;
+  transition: box-shadow 150ms ease;
+}
+
+.uem-input::placeholder {
+  color: #757575;
+}
+
+.uem-input:focus {
+  box-shadow: 0 0 0 1px #cccccc;
+}
+
+.uem-search {
+  height: 44px;
+  width: 100%;
+  border-radius: 9999px;
+  border: none;
+  background: #f6f6f6;
+  padding: 0 16px 0 40px;
+  font-size: 14px;
+  color: #000000;
+  outline: none;
+  transition: box-shadow 150ms ease;
+}
+
+.uem-search::placeholder {
+  color: #757575;
+}
+
+.uem-search:focus {
+  box-shadow: 0 0 0 1px #cccccc;
+}
+
+/* ── Auth screen ──────────────────────────────────────────────────── */
+.auth-mesh {
+  background-color: #0a0a0a;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(6, 193, 103, 0.18), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 85% 75%, rgba(39, 110, 241, 0.12), transparent 50%),
+    radial-gradient(ellipse 40% 30% at 60% 40%, rgba(6, 193, 103, 0.06), transparent 45%);
+}
+
+.auth-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.auth-input {
+  height: 48px;
+  width: 100%;
+  border-radius: 12px;
+  border: 1.5px solid transparent;
+  background: #f6f6f6;
+  padding: 0 16px;
+  font-size: 15px;
+  color: #000000;
+  outline: none;
+  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.auth-input::placeholder {
+  color: #9e9e9e;
+}
+
+.auth-input:hover {
+  background: #f0f0f0;
+}
+
+.auth-input:focus {
+  border-color: #06c167;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(6, 193, 103, 0.12);
+}
+
+.auth-card {
+  border: 1px solid #eeeeee;
+  background: #ffffff;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+/* Flat Uber Eats card: white surface, hairline border, whisper shadow. */
 .glass-card {
-  border: 1px solid color-mix(in srgb, var(--line) 90%, white 10%);
-  background: color-mix(in srgb, var(--card) 95%, #f8fafc 5%);
-  box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.06),
-    0 12px 28px rgba(15, 23, 42, 0.04);
-  backdrop-filter: blur(8px);
-}
-
-.dark .glass-card {
-  box-shadow:
-    0 1px 2px rgba(2, 6, 23, 0.5),
-    0 16px 34px rgba(2, 6, 23, 0.55);
+  border: 1px solid var(--line);
+  background: var(--card);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  backdrop-filter: none;
 }
 
 .heading-classic {
-  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
 .subtle-divider {
-  border: 1px solid color-mix(in srgb, var(--line) 88%, white 12%);
+  border: 1px solid var(--line);
 }
 
+/* "premium-gradient" surfaces become solid ink (Uber dark promo bands). */
 .premium-gradient {
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 45%, #0f172a 100%);
+  background: #000000;
 }
 
 .premium-gradient-soft {
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(37, 99, 235, 0.06) 55%, rgba(15, 23, 42, 0.08) 100%);
+  background: #f6f6f6;
+}
+
+/* Neutralize the legacy shimmer/glow effects for Uber's flat aesthetic. */
+.top-shine {
+  position: relative;
+}
+
+.top-shine::before {
+  content: none;
 }
 
 @keyframes fade-in-up {
@@ -86,37 +330,19 @@ body {
 }
 
 .animate-fade-in-up {
-  animation: fade-in-up 320ms ease-out both;
+  animation: fade-in-up 280ms ease-out both;
 }
 
 @keyframes pulse-glow {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.25);
+    box-shadow: 0 0 0 0 rgba(6, 193, 103, 0.4);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(37, 99, 235, 0);
+    box-shadow: 0 0 0 6px rgba(6, 193, 103, 0);
   }
 }
 
 .pulse-glow {
-  animation: pulse-glow 2.4s ease-in-out infinite;
-}
-
-.top-shine {
-  position: relative;
-  overflow: hidden;
-}
-
-.top-shine::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(110deg, transparent 40%, rgba(255, 255, 255, 0.35) 50%, transparent 60%);
-  transform: translateX(-120%);
-  transition: transform 700ms ease;
-}
-
-.top-shine:hover::before {
-  transform: translateX(120%);
+  animation: pulse-glow 2.2s ease-in-out infinite;
 }

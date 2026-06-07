@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowDownAZ, ArrowUpAZ, ChevronDown, FilterX } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { ArrowDownAZ, ArrowUpAZ, ChevronDown, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { bodyMuted, pageTitle } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
 type FilterOption<T> = {
@@ -90,29 +90,28 @@ export function ModuleTable<T extends Record<string, string | number>>({
   const hasActiveControls = query.length > 0 || activeFilter !== "all" || sortKey !== null;
 
   return (
-    <section className="glass-card animate-fade-in-up top-shine rounded-2xl">
-      <div className="border-b border-slate-200 p-6 dark:border-slate-800">
-        <h2 className="heading-classic text-2xl font-semibold text-black dark:text-slate-100">{title}</h2>
-        <p className="mt-1 text-sm text-black dark:text-slate-400">{description}</p>
-        <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-black dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
-          <span className="pulse-glow inline-block size-2 rounded-full bg-emerald-500" />
-          {visibleRows.length} visible rows
-        </div>
+    <section className="space-y-5">
+      <div>
+        <h1 className={pageTitle}>{title}</h1>
+        <p className={cn("mt-1", bodyMuted)}>{description}</p>
       </div>
 
-      <div className="flex flex-col gap-3 border-b border-slate-200 p-4 md:flex-row md:items-center dark:border-slate-800">
-        <Input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={searchPlaceholder}
-          className="md:max-w-sm"
-        />
+      <div className="flex flex-col gap-3 md:flex-row md:items-center">
+        <div className="relative md:max-w-sm md:flex-1">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-neutral-500" />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={searchPlaceholder}
+            className="uem-search"
+          />
+        </div>
         {filterOptions && filterOptions.length > 0 ? (
           <div className="relative">
             <select
               value={activeFilter}
               onChange={(event) => setActiveFilter(event.target.value)}
-              className="h-10 w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 pr-8 text-sm text-black shadow-sm outline-none transition-colors focus:border-blue-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 md:w-52"
+              className="h-11 w-full cursor-pointer appearance-none rounded-full bg-[#f6f6f6] py-2.5 pl-4 pr-10 text-sm font-semibold text-black outline-none md:w-56"
             >
               <option value="all">All</option>
               {filterOptions.map((option) => (
@@ -121,12 +120,12 @@ export function ModuleTable<T extends Record<string, string | number>>({
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-4 -translate-y-1/2 text-black" />
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-neutral-500" />
           </div>
         ) : null}
         <div className="md:ml-auto">
           <Button
-            variant="secondary"
+            variant="ghost"
             size="sm"
             onClick={() => {
               setQuery("");
@@ -136,21 +135,21 @@ export function ModuleTable<T extends Record<string, string | number>>({
             }}
             disabled={!hasActiveControls}
           >
-            <FilterX className="mr-1.5 size-3.5" />
-            Reset Controls
+            <X className="mr-1.5 size-3.5" />
+            Reset
           </Button>
         </div>
       </div>
 
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm">
-          <thead className="sticky top-0 z-10 bg-slate-50/95 backdrop-blur dark:bg-slate-900/80">
-            <tr>
+          <thead>
+            <tr className="border-b border-neutral-200">
               {columns.map((column) => (
                 <th
                   key={String(column.key)}
                   className={cn(
-                    "px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.11em] text-black dark:text-slate-400",
+                    "px-0 py-3 pr-6 text-left text-sm font-bold text-black last:pr-0",
                     column.className,
                   )}
                 >
@@ -158,7 +157,7 @@ export function ModuleTable<T extends Record<string, string | number>>({
                     <button
                       type="button"
                       onClick={() => handleSort(column.key)}
-                      className="inline-flex items-center gap-1 text-left transition-colors hover:text-black dark:hover:text-slate-200"
+                      className="inline-flex items-center gap-1 text-left transition-colors hover:opacity-70"
                     >
                       {column.label}
                       {sortKey === column.key ? (
@@ -168,7 +167,7 @@ export function ModuleTable<T extends Record<string, string | number>>({
                           <ArrowDownAZ className="size-3.5" />
                         )
                       ) : (
-                        <ArrowDownAZ className="size-3.5 opacity-45" />
+                        <ArrowDownAZ className="size-3.5 opacity-30" />
                       )}
                     </button>
                   ) : (
@@ -180,12 +179,9 @@ export function ModuleTable<T extends Record<string, string | number>>({
           </thead>
           <tbody>
             {visibleRows.map((item, index) => (
-              <tr
-                key={`${String(item[columns[0].key])}-${index}`}
-                className="border-t border-slate-100 transition-all odd:bg-white even:bg-slate-50/50 hover:bg-blue-50/50 dark:border-slate-800 dark:odd:bg-slate-950 dark:even:bg-slate-900/30 dark:hover:bg-slate-800/55"
-              >
+              <tr key={`${String(item[columns[0].key])}-${index}`} className="border-b border-neutral-200">
                 {columns.map((column) => (
-                  <td key={String(column.key)} className={cn("px-4 py-3 text-black dark:text-slate-200", column.className)}>
+                  <td key={String(column.key)} className={cn("py-4 pr-6 text-sm text-black last:pr-0", column.className)}>
                     {column.render ? column.render(item) : String(item[column.key])}
                   </td>
                 ))}
@@ -195,9 +191,9 @@ export function ModuleTable<T extends Record<string, string | number>>({
         </table>
       </div>
 
-      <div className="border-t border-slate-100 px-4 py-3 text-xs text-black dark:border-slate-800 dark:text-slate-400">
-        Showing {visibleRows.length} of {data.length} records
-      </div>
+      <p className="text-xs text-neutral-500">
+        Showing {visibleRows.length} of {data.length}
+      </p>
     </section>
   );
 }
