@@ -8,28 +8,28 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
-  ChartNoAxesCombined,
   Copy,
   Eye,
   EyeOff,
   Loader2,
-  Megaphone,
   ScrollText,
   ShieldCheck,
+  Store,
+  Truck,
 } from "lucide-react";
 import { SUPERADMIN_EMAIL, SUPERADMIN_PASSWORD } from "@/lib/auth/constants";
 import { getFirebaseClient, isFirebaseConfigured } from "@/lib/firebase/client";
 
 const highlights = [
-  { icon: ScrollText, text: "Live orders & sales" },
-  { icon: ChartNoAxesCombined, text: "Performance insights" },
-  { icon: Megaphone, text: "Marketing & offers" },
+  { icon: Store, text: "Providers & kitchens" },
+  { icon: ScrollText, text: "Orders & subscriptions" },
+  { icon: Truck, text: "Deliveries & routes" },
 ];
 
 const previewStats = [
-  { label: "Sales today", value: "A$219.65", trend: "+12%" },
-  { label: "Booked orders", value: "5", trend: "+2" },
-  { label: "Success score", value: "72", trend: "Good", accent: true },
+  { label: "Active providers", value: "24", trend: "+3 this week" },
+  { label: "Orders today", value: "186", trend: "+14%" },
+  { label: "Subscriptions", value: "1.2k", trend: "Live", accent: true },
 ];
 
 export default function LoginPage() {
@@ -118,16 +118,16 @@ export default function LoginPage() {
         <div className="relative z-10 max-w-[420px]">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm">
             <span className="size-1.5 rounded-full bg-[#06c167]" />
-            Merchant dashboard
+            Tiffin service platform
           </span>
           <h1 className="mt-6 text-[44px] font-bold leading-[1.08] tracking-[-0.03em]">
-            Run your restaurant
+            Run tiffin services
             <span className="mt-1 block bg-gradient-to-r from-[#06c167] to-[#34d399] bg-clip-text text-transparent">
-              from one place.
+              from one dashboard.
             </span>
           </h1>
           <p className="mt-5 text-[15px] leading-relaxed text-white/50">
-            Orders, menu, payouts, and growth tools — built for busy store managers.
+            Manage providers, subscriptions, orders, and deliveries — built for operating the Tiffin Finder network.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-2">
@@ -145,7 +145,7 @@ export default function LoginPage() {
           {/* Dashboard preview card */}
           <div className="auth-card mt-10 rounded-2xl p-5 text-black">
             <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">Today&apos;s summary</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">Network overview</p>
               <span className="rounded-full bg-[#e6f9ee] px-2 py-0.5 text-[10px] font-bold text-[#06c167]">LIVE</span>
             </div>
             <div className="mt-4 grid grid-cols-3 gap-3">
@@ -174,7 +174,7 @@ export default function LoginPage() {
             <span className="font-bold">Finder</span>
             <span className="font-normal">Manager</span>
           </Link>
-          <p className="mt-3 max-w-xs text-sm text-white/60">Sign in to manage your store dashboard.</p>
+          <p className="mt-3 max-w-xs text-sm text-white/60">Sign in to run your tiffin service operations.</p>
         </div>
 
         <header className="flex items-center px-6 py-5 lg:px-12">
@@ -191,7 +191,9 @@ export default function LoginPage() {
           <div className="auth-card w-full max-w-[440px] rounded-2xl p-8 sm:p-10">
             <div className="mb-8">
               <h2 className="text-[28px] font-bold tracking-[-0.02em] text-black">Welcome back</h2>
-              <p className="mt-2 text-[15px] text-neutral-500">Sign in with your admin account to continue.</p>
+              <p className="mt-2 text-[15px] text-neutral-500">
+                Sign in to manage providers, orders, and deliveries across the platform.
+              </p>
             </div>
 
             <form className="space-y-5" onSubmit={handleSubmit} noValidate>
