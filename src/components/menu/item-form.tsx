@@ -1,19 +1,27 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { ArrowLeft, Check, ChevronDown, CloudUpload, MoreVertical, Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { TabSlider } from "@/components/shared/tab-slider";
+
+const priceByOptions = ["Each", "Weight"] as const;
 
 export function ItemForm({ mode, backHref }: { mode: "new" | "edit"; backHref: string }) {
   const showPhoto = mode === "edit";
+  const [priceBy, setPriceBy] = useState<(typeof priceByOptions)[number]>("Each");
 
   return (
     <div className="space-y-8 pb-12">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <Link href={backHref} className="text-black hover:text-neutral-600">
-          <ArrowLeft className="size-5" />
+        <Link
+          href={backHref}
+          className="inline-flex items-center gap-2 rounded-full bg-[#f6f6f6] px-4 py-2 text-sm font-medium text-black hover:bg-[#eeeeee]"
+        >
+          <ArrowLeft className="size-4" />
+          Back
         </Link>
-        <button type="button" className="rounded-full bg-black px-5 py-2 text-sm font-medium text-white hover:bg-neutral-800">
+        <button type="button" className="rounded-full bg-black px-5 py-2.5 text-sm font-semibold text-white hover:bg-neutral-800">
           Save
         </button>
       </div>
@@ -44,19 +52,8 @@ export function ItemForm({ mode, backHref }: { mode: "new" | "edit"; backHref: s
 
         <div>
           <label className="text-sm font-semibold text-black">Price by</label>
-          <div className="mt-2 inline-flex rounded-full bg-[#f3f3f3] p-1">
-            {["Each", "Weight"].map((opt) => (
-              <button
-                key={opt}
-                type="button"
-                className={cn(
-                  "rounded-full px-4 py-2 text-sm font-medium",
-                  opt === "Each" ? "bg-black text-white" : "text-black",
-                )}
-              >
-                {opt}
-              </button>
-            ))}
+          <div className="mt-2">
+            <TabSlider options={priceByOptions} value={priceBy} onChange={setPriceBy} size="sm" />
           </div>
         </div>
 

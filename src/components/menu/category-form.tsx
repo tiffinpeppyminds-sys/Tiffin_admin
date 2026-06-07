@@ -7,8 +7,12 @@ export function CategoryForm({ backHref }: { backHref: string }) {
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <Link href={backHref} className="text-black hover:text-neutral-600">
-          <ArrowLeft className="size-5" />
+        <Link
+          href={backHref}
+          className="inline-flex items-center gap-2 rounded-full bg-[#f6f6f6] px-4 py-2 text-sm font-medium text-black hover:bg-[#eeeeee]"
+        >
+          <ArrowLeft className="size-4" />
+          Back
         </Link>
         <div className="flex gap-2">
           <button type="button" className="rounded-full border border-neutral-300 px-4 py-2 text-sm font-medium text-black hover:bg-neutral-50">
@@ -31,10 +35,7 @@ export function CategoryForm({ backHref }: { backHref: string }) {
             Add Note
           </button>
         </div>
-        <input
-          type="text"
-          className="mt-2 w-full max-w-md border-0 border-b border-neutral-300 bg-transparent py-3 text-sm outline-none focus:border-black"
-        />
+        <input type="text" className="auth-input mt-2 max-w-md" placeholder="Category name" />
       </div>
 
       <section className="border-t border-neutral-200 pt-8">
